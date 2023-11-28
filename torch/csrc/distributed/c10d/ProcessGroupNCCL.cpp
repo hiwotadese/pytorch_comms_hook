@@ -2999,6 +2999,26 @@ c10::intrusive_ptr<Work> ProcessGroupNCCL::allgather_into_tensor_coalesced(
     std::vector<at::Tensor>& outputs,
     std::vector<at::Tensor>& inputs,
     const AllgatherOptions& opts) {
+
+    auto input_tensor = inputs.back();
+    auto output_tensor = outputs.back();
+
+    RECORD_PARAM_COMMS_DATA(
+        static_cast<int>(
+            this->getSequenceNumberForGroup() +
+            1), // seq + 1 to match collective
+        this->getID(),
+        inputs, // inputTensors
+        outputs, // outputTensors
+        rank_, // rank
+        "all_gather_into_tensor_coalesced", // colName
+        input_tensor.numel(), // inSize
+        output_tensor.numel(), // outSize
+        input_tensor.scalar_type(), // dType
+        std::vector<int64_t>(), // inSplitSizes
+        std::vector<int64_t>() // outSplitSize
+        ); // worldSize
+
   return collective(
       inputs,
       outputs,
@@ -3217,6 +3237,25 @@ c10::intrusive_ptr<Work> ProcessGroupNCCL::reduce_scatter_tensor_coalesced(
     std::vector<at::Tensor>& outputs,
     std::vector<at::Tensor>& inputs,
     const ReduceScatterOptions& opts) {
+
+    auto input_tensor = inputs.back();
+    auto output_tensor = outputs.back();
+
+    RECORD_PARAM_COMMS_DATA(
+        static_cast<int>(
+            this->getSequenceNumberForGroup() +
+            1), // seq + 1 to match collective
+        this->getID(),
+        inputs, // inputTensors
+        outputs, // outputTensors
+        rank_, // rank
+        "reduce_scatter_tensor_coalesced", // colName
+        input_tensor.numel(), // inSize
+        output_tensor.numel(), // outSize
+        input_tensor.scalar_type(), // dType
+        std::vector<int64_t>(), // inSplitSizes
+        std::vector<int64_t>() // outSplitSize
+        );
   return collective(
       inputs,
       outputs,
