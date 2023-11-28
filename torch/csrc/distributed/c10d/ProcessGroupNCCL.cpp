@@ -3016,8 +3016,8 @@ c10::intrusive_ptr<Work> ProcessGroupNCCL::allgather_into_tensor_coalesced(
         output_tensor.numel(), // outSize
         input_tensor.scalar_type(), // dType
         std::vector<int64_t>(), // inSplitSizes
-        std::vector<int64_t>() // outSplitSize
-        ); // worldSize
+        std::vector<int64_t>(), // outSplitSize
+        this->getSize()); // worldSize
 
   return collective(
       inputs,
@@ -3254,8 +3254,8 @@ c10::intrusive_ptr<Work> ProcessGroupNCCL::reduce_scatter_tensor_coalesced(
         output_tensor.numel(), // outSize
         input_tensor.scalar_type(), // dType
         std::vector<int64_t>(), // inSplitSizes
-        std::vector<int64_t>() // outSplitSize
-        );
+        std::vector<int64_t>(), // outSplitSize
+        this->getSize()); // worldSize
   return collective(
       inputs,
       outputs,
